@@ -95,6 +95,11 @@ public class Main extends JFrame implements ActionListener{
 			lblStatus.setText("Done.");
 		}else if(ae.getActionCommand().equals("activate")){
 			String for_ = JOptionPane.showInputDialog("Care Of:", "Maam Reg");
+			if(for_ == null){
+				JOptionPane.showMessageDialog(null, "Please specify your \"c/o\" to proceed with PIN activation.", "Error", JOptionPane.ERROR_MESSAGE);
+				lblStatus.setText("Done.");
+				return;
+			}
 			try{
 				lblStatus.setText("Activating PIN: " + txtPin.getText() + "...");
 				lblStatus.paintImmediately(lblStatus.getVisibleRect());
@@ -125,13 +130,14 @@ public class Main extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(null, "Incorrect Password", "GIBX PIN Table v.0.5", JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
+		}else{
+			return false;
 		}
 		return true;
 	}
 
 	public static void main(String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException{
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		new Main();
-		//if(confirm()) new Main();
+		if(confirm()) new Main();
 	}
 }
