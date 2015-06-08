@@ -18,6 +18,10 @@ public class Main extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	
+	private JTextField txtPin = new JTextField();
+	private JLabel lblPinDb = new JLabel("N/A");
+	private JLabel lblAvailableDb = new JLabel("N/A:");
+	private JLabel lblUsedDb = new JLabel("N/A:");
 	private JButton btnActivate = new JButton("Activate");
 	
 	public Main(){
@@ -25,11 +29,10 @@ public class Main extends JFrame implements ActionListener{
 		JPanel pane = new JPanel();
 		pane.setLayout(new MigLayout("", "[grow]", "[grow]"));
 		JLabel lblSearch = new JLabel("Search PIN:");
-		JTextField txtPin = new JTextField();
 		JLabel lblPin = new JLabel("PIN:");
-		JLabel lblPinDb = new JLabel("N/A");
-		JLabel lblStatus = new JLabel("Status:");
-		JLabel lblStatusDb = new JLabel("N/A:");
+		JLabel lblAvailable = new JLabel("Available:");
+		JLabel lblUsed = new JLabel("Used:");
+		
 		btnActivate.setEnabled(false);
 		txtPin.setActionCommand("pin_search");
 		txtPin.addActionListener(this);
@@ -39,9 +42,11 @@ public class Main extends JFrame implements ActionListener{
 		pane.add(txtPin, "w 200, growx, wrap");
 		pane.add(lblPin);
 		pane.add(lblPinDb, "wrap");
-		pane.add(lblStatus);
-		pane.add(lblStatusDb, "split 2");
-		pane.add(btnActivate, "growx");
+		pane.add(lblAvailable);
+		pane.add(lblAvailableDb, "split 2");
+		pane.add(btnActivate, "growx, wrap");
+		pane.add(lblUsed);
+		pane.add(lblUsedDb);
 		add(pane);
 		pack();
 		setLocationRelativeTo(null);
@@ -51,9 +56,32 @@ public class Main extends JFrame implements ActionListener{
 	
 	public void actionPerformed(ActionEvent ae){
 		if(ae.getActionCommand().equals("pin_search")){
-			System.out.println("searching...");
+			btnActivate.setEnabled(false);
+			PinConnection pinConnection = new PinConnection();
+			pinConnection.search(txtPin.getText());
+			if(pinConnection.getAvailable().length() == 0){
+				lblPinDb.setText("<html><strong>NO SUCH PIN</strong></html>");
+				lblAvailableDb.setText("N/A");
+				lblUsedDb.setText("N/A");
+				pack();
+			}else{
+				lblPinDb.setText(txtPin.getText());
+				lblAvailableDb.setText(pinConnection.getAvailable());
+				lblUsedDb.setText(pinConnection.getUsed());
+				if(pinConnection.getAvailable().equals("false")){
+					btnActivate.setEnabled(true);
+				}
+			}
 		}else if(ae.getActionCommand().equals("activate")){
-			System.out.println("activating...");
+			PinConnection pinConnection = new PinConnection();
+			pinConnection.activate(txtPin.getText());
+			if(pinConnection.isUpdated()){
+				btnActivate.setEnabled(false);
+				lblAvailableDb.setText("true");
+			}else{
+				JOptionPane.showMessageDialog(null, "Error activing. Please contact Jim");
+			}
+			
 		}
 			
 	}
