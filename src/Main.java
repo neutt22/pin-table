@@ -1,6 +1,10 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -10,6 +14,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -23,9 +28,13 @@ public class Main extends JFrame implements ActionListener{
 	private JLabel lblAvailableDb = new JLabel("N/A:");
 	private JLabel lblUsedDb = new JLabel("N/A:");
 	private JButton btnActivate = new JButton("Activate");
+	private JLabel lblStatus = new JLabel("Ready.");
+	
+	private ImageIcon logo = new ImageIcon(getClass().getResource("/res/logo.png"));
 	
 	public Main(){
 		super("GIBX PIN Table v.0.5");
+		setIconImage(logo.getImage());
 		JPanel pane = new JPanel();
 		pane.setLayout(new MigLayout("", "[grow]", "[grow]"));
 		JLabel lblSearch = new JLabel("Search PIN:");
@@ -38,6 +47,7 @@ public class Main extends JFrame implements ActionListener{
 		txtPin.addActionListener(this);
 		btnActivate.setActionCommand("activate");
 		btnActivate.addActionListener(this);
+		lblStatus.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		pane.add(lblSearch);
 		pane.add(txtPin, "w 200, growx, wrap");
 		pane.add(lblPin);
@@ -46,8 +56,9 @@ public class Main extends JFrame implements ActionListener{
 		pane.add(lblAvailableDb, "split 2");
 		pane.add(btnActivate, "growx, wrap");
 		pane.add(lblUsed);
-		pane.add(lblUsedDb);
+		pane.add(lblUsedDb, "wrap");
 		add(pane);
+		add(lblStatus, BorderLayout.SOUTH);
 		pack();
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,11 +67,18 @@ public class Main extends JFrame implements ActionListener{
 	
 	public void actionPerformed(ActionEvent ae){
 		if(ae.getActionCommand().equals("pin_search")){
+			try{
+				lblStatus.setText("Searching PIN: " + txtPin.getText() + "...");
+				lblStatus.paintImmediately(lblStatus.getVisibleRect());
+				Thread.sleep(2000);
+			}catch(Exception e){
+				
+			}
 			btnActivate.setEnabled(false);
 			PinConnection pinConnection = new PinConnection();
 			pinConnection.search(txtPin.getText());
 			if(pinConnection.getAvailable().length() == 0){
-				lblPinDb.setText("<html><strong>NO SUCH PIN</strong></html>");
+				lblPinDb.setText("NO SUCH PIN");
 				lblAvailableDb.setText("N/A");
 				lblUsedDb.setText("N/A");
 				pack();
@@ -72,7 +90,15 @@ public class Main extends JFrame implements ActionListener{
 					btnActivate.setEnabled(true);
 				}
 			}
+			lblStatus.setText("Done.");
 		}else if(ae.getActionCommand().equals("activate")){
+			try{
+				lblStatus.setText("Activating PIN: " + txtPin.getText() + "...");
+				lblStatus.paintImmediately(lblStatus.getVisibleRect());
+				Thread.sleep(2000);
+			}catch(Exception e){
+				
+			}
 			PinConnection pinConnection = new PinConnection();
 			pinConnection.activate(txtPin.getText());
 			if(pinConnection.isUpdated()){
@@ -81,7 +107,7 @@ public class Main extends JFrame implements ActionListener{
 			}else{
 				JOptionPane.showMessageDialog(null, "Error activing. Please contact Jim");
 			}
-			
+			lblStatus.setText("Done.");
 		}
 			
 	}
