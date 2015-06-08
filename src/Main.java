@@ -1,7 +1,8 @@
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -31,6 +32,7 @@ public class Main extends JFrame implements ActionListener{
 	private JLabel lblStatus = new JLabel("Ready.");
 	
 	private ImageIcon logo = new ImageIcon(getClass().getResource("/res/logo.png"));
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	
 	public Main(){
 		super("GIBX PIN Table v.0.5");
@@ -92,6 +94,7 @@ public class Main extends JFrame implements ActionListener{
 			}
 			lblStatus.setText("Done.");
 		}else if(ae.getActionCommand().equals("activate")){
+			String for_ = JOptionPane.showInputDialog("Care Of:", "Maam Reg");
 			try{
 				lblStatus.setText("Activating PIN: " + txtPin.getText() + "...");
 				lblStatus.paintImmediately(lblStatus.getVisibleRect());
@@ -104,6 +107,7 @@ public class Main extends JFrame implements ActionListener{
 			if(pinConnection.isUpdated()){
 				btnActivate.setEnabled(false);
 				lblAvailableDb.setText("true");
+				pinConnection.addHistory(Util.getPCName(), Util.getName(), for_, dateFormat.format(new Date()), txtPin.getText());
 			}else{
 				JOptionPane.showMessageDialog(null, "Error activing. Please contact Jim");
 			}
@@ -130,5 +134,4 @@ public class Main extends JFrame implements ActionListener{
 		new Main();
 		//if(confirm()) new Main();
 	}
-
 }

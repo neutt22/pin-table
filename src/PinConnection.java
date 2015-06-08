@@ -56,6 +56,24 @@ public class PinConnection {
 		isUpdated = false;
 	}
 	
+	public void addHistory(String pc_name, String name, String for_, String date, String pin){
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			connect = DriverManager.getConnection("jdbc:mysql://localhost/ywc?user=root&password=GIBCO22jim");
+			statement = connect.prepareStatement("INSERT INTO histories (pc_name, name, for_, date, pin) VALUES (?,?,?,?,?)");
+			statement.setString(1, pc_name);
+			statement.setString(2, name);
+			statement.setString(3, for_);
+			statement.setString(4, date);
+			statement.setString(5, pin);
+			statement.executeUpdate();
+			connect.close();
+			statement.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	public void reset(){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
