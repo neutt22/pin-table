@@ -207,7 +207,7 @@ public class Main extends JFrame implements ActionListener{
 
 	public static void main(String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException{
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		new Main();
-		//if(confirm()) new Main();
+//		new Main();
+		if(confirm()) new Main();
 	}
 }
