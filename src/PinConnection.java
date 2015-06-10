@@ -74,6 +74,23 @@ public class PinConnection {
 		}
 	}
 	
+	public boolean exportPins(){
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			connect = DriverManager.getConnection("jdbc:mysql://localhost/ywc?user=root&password=GIBCO22jim");
+			String SQL = "SELECT pin, available, used FROM pins INTO OUTFILE 'C:/pins.csv' FIELDS TERMINATED" +
+					" BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' ";
+			statement = connect.prepareStatement(SQL);
+			statement.executeQuery();
+			connect.close();
+			statement.close();
+			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public void reset(){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
@@ -88,7 +105,7 @@ public class PinConnection {
 	}
 	
 //	public static void main(String args[]){
-//		new PinConnection().reset();
+//		new PinConnection().exportPins();
 //	}
 
 }

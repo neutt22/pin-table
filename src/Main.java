@@ -9,6 +9,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -24,6 +27,13 @@ public class Main extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	
+	private JMenuBar menuBar = new JMenuBar();
+	private JMenu mnuFile = new JMenu("File");
+	private JMenuItem mnuFileQuit = new JMenuItem("Quit");
+	private JMenu mnuExport = new JMenu("Export");
+	private JMenuItem mnuExportPins = new JMenuItem("Pins");
+	private JMenuItem mnuExportLogs = new JMenuItem("Logs");
+	
 	private JTextField txtPin = new JTextField();
 	private JLabel lblPinDb = new JLabel("N/A");
 	private JLabel lblAvailableDb = new JLabel("N/A:");
@@ -36,6 +46,12 @@ public class Main extends JFrame implements ActionListener{
 	
 	public Main(){
 		super("GIBX PIN Table v.0.5");
+		mnuFile.add(mnuFileQuit);
+		menuBar.add(mnuFile);
+		mnuExport.add(mnuExportPins);
+		mnuExport.add(mnuExportLogs);
+		menuBar.add(mnuExport);
+		setJMenuBar(menuBar);
 		setIconImage(logo.getImage());
 		JPanel pane = new JPanel();
 		pane.setLayout(new MigLayout("", "[grow]", "[grow]"));
@@ -138,6 +154,7 @@ public class Main extends JFrame implements ActionListener{
 
 	public static void main(String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException{
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		if(confirm()) new Main();
+		new Main();
+		//if(confirm()) new Main();
 	}
 }
