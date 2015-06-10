@@ -1,12 +1,14 @@
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -51,6 +53,12 @@ public class Main extends JFrame implements ActionListener{
 		mnuExport.add(mnuExportPins);
 		mnuExport.add(mnuExportLogs);
 		menuBar.add(mnuExport);
+		mnuFileQuit.setActionCommand("quit");
+		mnuExportPins.setActionCommand("export_pins");
+		mnuExportLogs.setActionCommand("export_logs");
+		mnuFileQuit.addActionListener(this);
+		mnuExportPins.addActionListener(this);
+		mnuExportLogs.addActionListener(this);
 		setJMenuBar(menuBar);
 		setIconImage(logo.getImage());
 		JPanel pane = new JPanel();
@@ -84,6 +92,51 @@ public class Main extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent ae){
+		if(ae.getActionCommand().equals("quit")){
+			System.exit(0);
+		}
+		if(ae.getActionCommand().equals("export_pins")){
+			JFileChooser fileChooser = new JFileChooser();
+			File file = null;
+			if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+				file = fileChooser.getSelectedFile();
+			}else{
+				return;
+			}
+			try{
+				lblStatus.setText("Exporting PINs database. Please wait...");
+				lblStatus.paintImmediately(lblStatus.getVisibleRect());
+				Thread.sleep(2000);
+			}catch(Exception e){
+				
+			}
+			PinConnection pin = new PinConnection();
+			boolean exported = pin.exportPins(file.getAbsolutePath().replace("\\", "/"));
+			if(exported){
+				lblStatus.setText("PINS exported to: " + file.getAbsolutePath() + ".csv");
+			}
+		}
+		if(ae.getActionCommand().equals("export_logs")){
+			JFileChooser fileChooser = new JFileChooser();
+			File file = null;
+			if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+				file = fileChooser.getSelectedFile();
+			}else{
+				return;
+			}
+			try{
+				lblStatus.setText("Exporting LOGS database. Please wait...");
+				lblStatus.paintImmediately(lblStatus.getVisibleRect());
+				Thread.sleep(2000);
+			}catch(Exception e){
+				
+			}
+			PinConnection pin = new PinConnection();
+			boolean exported = pin.exportLogs(file.getAbsolutePath().replace("\\", "/"));
+			if(exported){
+				lblStatus.setText("LOGS exported to: " + file.getAbsolutePath() + ".csv");
+			}
+		}
 		if(ae.getActionCommand().equals("pin_search")){
 			try{
 				lblStatus.setText("Searching PIN: " + txtPin.getText() + "...");

@@ -3,7 +3,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-
 public class PinConnection {
 	
 	private Connection connect = null;
@@ -74,12 +73,31 @@ public class PinConnection {
 		}
 	}
 	
-	public boolean exportPins(){
+	public boolean exportPins(String filename){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
 			connect = DriverManager.getConnection("jdbc:mysql://localhost/ywc?user=root&password=GIBCO22jim");
-			String SQL = "SELECT pin, available, used FROM pins INTO OUTFILE 'C:/pins.csv' FIELDS TERMINATED" +
+			String SQL = "SELECT pin, available, used FROM pins INTO OUTFILE '" + filename + ".csv' FIELDS TERMINATED" +
 					" BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' ";
+			System.out.println(SQL);
+			statement = connect.prepareStatement(SQL);
+			statement.executeQuery();
+			connect.close();
+			statement.close();
+			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean exportLogs(String filename){
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			connect = DriverManager.getConnection("jdbc:mysql://localhost/ywc?user=root&password=GIBCO22jim");
+			String SQL = "SELECT pc_name, name, for_, date, pin FROM histories INTO OUTFILE '" + filename + ".csv' FIELDS TERMINATED" +
+					" BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' ";
+			System.out.println(SQL);
 			statement = connect.prepareStatement(SQL);
 			statement.executeQuery();
 			connect.close();
@@ -105,6 +123,7 @@ public class PinConnection {
 	}
 	
 //	public static void main(String args[]){
+//		
 //		new PinConnection().exportPins();
 //	}
 
