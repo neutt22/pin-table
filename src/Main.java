@@ -35,6 +35,7 @@ public class Main extends JFrame implements ActionListener{
 	private JMenu mnuExport = new JMenu("Export");
 	private JMenuItem mnuExportPins = new JMenuItem("Pins");
 	private JMenuItem mnuExportLogs = new JMenuItem("Logs");
+	private JMenuItem mnuExportMembers = new JMenuItem("Members");
 	
 	private JTextField txtPin = new JTextField();
 	private JLabel lblPinDb = new JLabel("N/A");
@@ -52,13 +53,16 @@ public class Main extends JFrame implements ActionListener{
 		menuBar.add(mnuFile);
 		mnuExport.add(mnuExportPins);
 		mnuExport.add(mnuExportLogs);
+		mnuExport.add(mnuExportMembers);
 		menuBar.add(mnuExport);
 		mnuFileQuit.setActionCommand("quit");
 		mnuExportPins.setActionCommand("export_pins");
 		mnuExportLogs.setActionCommand("export_logs");
+		mnuExportMembers.setActionCommand("export_members");
 		mnuFileQuit.addActionListener(this);
 		mnuExportPins.addActionListener(this);
 		mnuExportLogs.addActionListener(this);
+		mnuExportMembers.addActionListener(this);
 		setJMenuBar(menuBar);
 		setIconImage(logo.getImage());
 		JPanel pane = new JPanel();
@@ -135,6 +139,28 @@ public class Main extends JFrame implements ActionListener{
 			boolean exported = pin.exportLogs(file.getAbsolutePath().replace("\\", "/"));
 			if(exported){
 				lblStatus.setText("LOGS exported to: " + file.getAbsolutePath() + ".csv");
+			}
+		}
+		
+		if(ae.getActionCommand().equals("export_members")){
+			JFileChooser fileChooser = new JFileChooser();
+			File file = null;
+			if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+				file = fileChooser.getSelectedFile();
+			}else{
+				return;
+			}
+			try{
+				lblStatus.setText("Exporting MEMBERS database. Please wait...");
+				lblStatus.paintImmediately(lblStatus.getVisibleRect());
+				Thread.sleep(2000);
+			}catch(Exception e){
+				
+			}
+			PinConnection pin = new PinConnection();
+			boolean exported = pin.exportMembers(file.getAbsolutePath().replace("\\", "/"));
+			if(exported){
+				lblStatus.setText("MEMBERS exported to: " + file.getAbsolutePath() + ".csv");
 			}
 		}
 		if(ae.getActionCommand().equals("pin_search")){

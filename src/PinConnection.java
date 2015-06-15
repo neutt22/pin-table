@@ -17,10 +17,12 @@ public class PinConnection {
 	public String getUsed(){ return used; }
 	public boolean isUpdated(){ return isUpdated; }
 	
+	private static String CONNECTION = "jdbc:mysql://localhost/ywc?user=root&password=GIBCO22jim";
+	
 	public void search(String pin){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
-			connect = DriverManager.getConnection("jdbc:mysql://localhost/ywc?user=root&password=GIBCO22jim");
+			connect = DriverManager.getConnection(CONNECTION);
 			statement = connect.prepareStatement("SELECT * from pins where pin=?");
 			statement.setString(1, pin);
 			resultSet = statement.executeQuery();
@@ -40,7 +42,7 @@ public class PinConnection {
 	public void activate(String pin){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
-			connect = DriverManager.getConnection("jdbc:mysql://localhost/ywc?user=root&password=GIBCO22jim");
+			connect = DriverManager.getConnection(CONNECTION);
 			statement = connect.prepareStatement("UPDATE pins SET available='true' where pin=?");
 			statement.setString(1, pin);
 			statement.executeUpdate();
@@ -58,7 +60,7 @@ public class PinConnection {
 	public void addHistory(String pc_name, String name, String for_, String date, String pin){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
-			connect = DriverManager.getConnection("jdbc:mysql://localhost/ywc?user=root&password=GIBCO22jim");
+			connect = DriverManager.getConnection(CONNECTION);
 			statement = connect.prepareStatement("INSERT INTO histories (pc_name, name, for_, date, pin) VALUES (?,?,?,?,?)");
 			statement.setString(1, pc_name);
 			statement.setString(2, name);
@@ -76,7 +78,7 @@ public class PinConnection {
 	public boolean exportPins(String filename){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
-			connect = DriverManager.getConnection("jdbc:mysql://localhost/ywc?user=root&password=GIBCO22jim");
+			connect = DriverManager.getConnection(CONNECTION);
 			String SQL = "SELECT pin, available, used FROM pins INTO OUTFILE '" + filename + ".csv' FIELDS TERMINATED" +
 					" BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' ";
 			System.out.println(SQL);
@@ -94,8 +96,26 @@ public class PinConnection {
 	public boolean exportLogs(String filename){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
-			connect = DriverManager.getConnection("jdbc:mysql://localhost/ywc?user=root&password=GIBCO22jim");
+			connect = DriverManager.getConnection(CONNECTION);
 			String SQL = "SELECT pc_name, name, for_, date, pin FROM histories INTO OUTFILE '" + filename + ".csv' FIELDS TERMINATED" +
+					" BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' ";
+			System.out.println(SQL);
+			statement = connect.prepareStatement(SQL);
+			statement.executeQuery();
+			connect.close();
+			statement.close();
+			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean exportMembers(String filename){
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			connect = DriverManager.getConnection(CONNECTION);
+			String SQL = "SELECT * FROM members INTO OUTFILE '" + filename + ".csv' FIELDS TERMINATED" +
 					" BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' ";
 			System.out.println(SQL);
 			statement = connect.prepareStatement(SQL);
@@ -112,7 +132,7 @@ public class PinConnection {
 	public void reset(){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
-			connect = DriverManager.getConnection("jdbc:mysql://localhost/ywc?user=root&password=GIBCO22jim");
+			connect = DriverManager.getConnection(CONNECTION);
 			statement = connect.prepareStatement("UPDATE pins SET available='false', used='false'");
 			statement.executeUpdate();
 			connect.close();
